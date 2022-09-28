@@ -221,6 +221,8 @@ T List<T>::last() const {
 //
 // @returns the element in index
 // @throws IndexOutOfBounds, if index >= size.
+//
+// Complexity O(n)
 // =================================================================
 template <class T>
 T List<T>::get(uint index) const {
@@ -275,7 +277,7 @@ void List<T>::push_back(T val) {
 	}
 
 	q = new Node<T>(val);
-	q->next = p->next; //We can delete this node
+	q->next = p->next;
 	p->next = q;
 	size++;
 }
@@ -285,6 +287,8 @@ void List<T>::push_back(T val) {
 // was in that position is shifted to the right.
 //
 // @throws IndexOutOfBounds, if index > size.
+// 
+// Complexity O(n)
 // =================================================================
 template <class T>
 void List<T>::insert_at(T val, uint index) {
@@ -301,6 +305,10 @@ void List<T>::insert_at(T val, uint index) {
 		return;
 	}
 
+	if(index >= size || index < 0){
+		throw IndexOutOfBounds();
+	}
+
 	p = head;
 	for(int i = 0; i < index -1; i++){
 		p = p->next;
@@ -310,14 +318,6 @@ void List<T>::insert_at(T val, uint index) {
 	q->next = p->next;
 	p->next = q;
 	size++;
-
-	
-	/* Verificar la cantidad de elementos en la lista y verificar que hay algo ahi
-		Si esta vacia = push_front, si es una pos -1 push_back
-		Necesitamos un contador ver ejemplo c del mapa
-		Si el valor del indice es mayor al de size THROWS(IndexOutOfBounds);
-
-	*/
 }
 
 // =================================================================
@@ -385,6 +385,8 @@ T List<T>::pop_back() {
 //
 // @returns the element that was in index.
 // @throws IndexOutOfBounds, if index >= size.
+//
+// Complexity O(n)
 // =================================================================
 template <class T>
 T List<T>::remove_at(uint index) {
@@ -393,6 +395,14 @@ T List<T>::remove_at(uint index) {
 	Node<T> *p, *q;
 
 	p = head;
+	if (empty()) {
+		throw NoSuchElement();
+		}
+	
+	if(0 > index || index > size){
+		throw IndexOutOfBounds();
+	}
+	
 	if(index == 0){
 		return pop_front();
 	}
@@ -403,8 +413,9 @@ T List<T>::remove_at(uint index) {
 
 	q = p->next;
 	p->next = q->next;
-	delete q;
+	aux = q->value;
 	size--;
+	delete q;
 
 	return aux;
 }
@@ -414,6 +425,8 @@ T List<T>::remove_at(uint index) {
 //
 // @returns the position of an item in the list, -1 otherwise.
 // @throws IndexOutOfBounds, if index >= size.
+// 
+// Complexity O(n)
 // =================================================================
 template <class T>
 long int List<T>::indexOf(T val) const {
