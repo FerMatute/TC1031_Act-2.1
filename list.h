@@ -1,8 +1,8 @@
 // =================================================================
 //
 // File: list.h
-// Author:
-// Date:
+// Author: Fernando Josué Matute Soto
+// Date: 27/09/22
 // 
 // =================================================================
 #ifndef LIST_H
@@ -61,6 +61,7 @@ private:
 
 public:
 	List();
+	//List(const List <T>&) //No creo que sea necesario (Es para indicar que el valor de la lista en cte)
 	~List();
 
 	uint  length() const;
@@ -224,8 +225,20 @@ T List<T>::last() const {
 template <class T>
 T List<T>::get(uint index) const {
 	T aux;
-
 	// TO DO
+	Node<T> *p;
+	p = head;
+
+	if(index >= size || index < 0){
+		throw IndexOutOfBounds();
+	}
+
+	for(int i = 0; i < index; i++){
+		p = p->next;
+	}
+
+	aux = p->value;
+
 	return aux;
 }
 
@@ -249,7 +262,7 @@ void List<T>::push_front(T val) {
 // =================================================================
 template <class T>
 void List<T>::push_back(T val) {
-	Node<T> *p, *q;
+	Node<T> *p, *q; //p is value q is direction
 
 	if (empty()) {
 		push_front(val);
@@ -262,7 +275,7 @@ void List<T>::push_back(T val) {
 	}
 
 	q = new Node<T>(val);
-	q->next = p->next;
+	q->next = p->next; //We can delete this node
 	p->next = q;
 	size++;
 }
@@ -276,6 +289,35 @@ void List<T>::push_back(T val) {
 template <class T>
 void List<T>::insert_at(T val, uint index) {
 	// TO DO
+	Node<T> *p, *q;
+
+	if (empty() || index == 0) {
+		push_front(val);
+		return;
+	}
+
+	if(index == size){
+		push_back(val);
+		return;
+	}
+
+	p = head;
+	for(int i = 0; i < index -1; i++){
+		p = p->next;
+	}
+
+	q = new Node<T>(val);
+	q->next = p->next;
+	p->next = q;
+	size++;
+
+	
+	/* Verificar la cantidad de elementos en la lista y verificar que hay algo ahi
+		Si esta vacia = push_front, si es una pos -1 push_back
+		Necesitamos un contador ver ejemplo c del mapa
+		Si el valor del indice es mayor al de size THROWS(IndexOutOfBounds);
+
+	*/
 }
 
 // =================================================================
@@ -348,6 +390,22 @@ template <class T>
 T List<T>::remove_at(uint index) {
 	T aux;
 	// TO DO
+	Node<T> *p, *q;
+
+	p = head;
+	if(index == 0){
+		return pop_front();
+	}
+
+	for(int i = 0; i < index -1; i++){ 
+		p = p->next;
+	}
+
+	q = p->next;
+	p->next = q->next;
+	delete q;
+	size--;
+
 	return aux;
 }
 
@@ -360,6 +418,16 @@ T List<T>::remove_at(uint index) {
 template <class T>
 long int List<T>::indexOf(T val) const {
 	// TO DO
+	Node<T> *p;
+
+	p = head;
+	
+	for(long int i = 0; i < size; i++){
+		if(val == p->value){
+			return i;
+		}
+		p = p->next;
+	}
 	return -1;
 }
 
